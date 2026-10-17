@@ -1,0 +1,23 @@
+{
+  "name": "portfolio-b-serverless-api",
+  "version": "1.0.0",
+  "description": "Serverless Controller API for Portfolio web application (Vercel Free Tier ready)",
+  "type": "module",
+  "main": "api/portfolio.js",
+  "scripts": {
+    "dev": "node dev-server.mjs",
+    "start": "node dev-server.mjs",
+    "build": "echo \"Ready for Vercel deployment\""
+  },
+  "keywords": [
+    "vercel",
+    "serverless",
+    "portfolio-controller",
+    "api"
+  ],
+  "author": "Hosiah Ledwaba",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
