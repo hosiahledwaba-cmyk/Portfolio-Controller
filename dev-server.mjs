@@ -6,6 +6,10 @@ import healthHandler from './api/health.js';
 import authHandler from './api/auth.js';
 import docsHandler from './api/docs.js';
 import openapiHandler from './api/openapi.js';
+import blobHandler from './api/blob.js';
+import cvExtractHandler from './api/cv-extract.js';
+import githubHandler from './api/github.js';
+import postsHandler from './api/posts.js';
 
 const PORT = process.env.PORT || 4000;
 
@@ -79,6 +83,14 @@ const server = http.createServer(async (req, res) => {
         return await healthHandler(req, res);
       } else if (pathname === '/api/auth') {
         return await authHandler(req, res);
+      } else if (pathname === '/api/blob' || pathname === '/api/upload') {
+        return await blobHandler(req, res);
+      } else if (pathname === '/api/cv-extract' || pathname === '/api/cv/extract') {
+        return await cvExtractHandler(req, res);
+      } else if (pathname === '/api/github' || pathname === '/api/github/repos' || pathname === '/api/github/sync') {
+        return await githubHandler(req, res);
+      } else if (pathname === '/api/posts' || pathname === '/api/posts/react' || pathname.startsWith('/api/posts/')) {
+        return await postsHandler(req, res);
       } else {
         return res.status(404).json({ success: false, error: `Route ${pathname} not found` });
       }

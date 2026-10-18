@@ -28,6 +28,7 @@ It serves as the backend controller for the interactive developer portfolio, all
 | `GET` | `/openapi.json` | OpenAPI 3.0 JSON specification | No |
 | `GET` | `/api/portfolio` | Retrieve current portfolio data (JSON) | No |
 | `PUT` | `/api/portfolio` | Update all or part of the portfolio details | Yes (`x-admin-key`) |
+| `GET` | `/api/github` | Discover public GitHub repositories and metadata securely | Optional (`x-admin-key`) |
 | `POST` | `/api/reset` | Reset portfolio back to default seed data | Yes (`x-admin-key`) |
 | `GET` | `/api/health` | Healthcheck and storage provider status | No |
 | `POST` | `/api/auth` | Verify admin key validity | Yes (`x-admin-key`) |
