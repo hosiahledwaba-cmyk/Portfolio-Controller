@@ -3,12 +3,13 @@ import { verifyAdminToken, isUsingDefaultSecret } from '../lib/auth.js';
 
 export default async function handler(req, res) {
   // CORS configuration
+  const origin = req.headers.origin || '*';
+  res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, x-admin-key, x-api-key'
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, x-admin-key, X-Admin-Key, x-api-key, X-Api-Key'
   );
 
   if (req.method === 'OPTIONS') {
@@ -34,6 +35,13 @@ export default async function handler(req, res) {
 
   // PUT / POST: Protected update endpoint
   if (req.method === 'PUT' || req.method === 'POST') {
+    // Parse JSON body first so verifyAdminToken can inspect body.adminKey / body.password if headers were dropped
+    if (typeof req.body === 'string') {
+      try {
+        req.body = JSON.parse(req.body);
+      } catch (e) {}
+    }
+
     const isAuthorized = await verifyAdminToken(req);
     if (!isAuthorized) {
       return res.status(401).json({
@@ -51,11 +59,17 @@ export default async function handler(req, res) {
         });
       }
 
+      // Strip authentication credentials from incoming body before persisting to database
+      const sanitizedBody = { ...body };
+      delete sanitizedBody.adminKey;
+      delete sanitizedBody.passcode;
+      delete sanitizedBody.password;
+
       // Merge current data with incoming updates or replace completely if whole structure is passed
       const current = await getPortfolioData();
       const updated = {
         ...current,
-        ...body,
+        ...sanitizedBody,
       };
 
       const saved = await savePortfolioData(updated);
